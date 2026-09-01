@@ -72,6 +72,7 @@
     position:relative;
   }
   .card:not(.locked):hover{transform:translateY(-3px);border-color:var(--turq)}
+  .card:not(.locked):active{transform:translateY(0);border-color:var(--turq);background:rgba(0,229,209,.08)}
   .card.locked{opacity:.42;cursor:default}
   .card.done{border-color:rgba(0,229,209,.5)}
 
@@ -97,6 +98,7 @@
     display:inline-flex;align-items:center;gap:6px;margin-bottom:26px;cursor:pointer;
   }
   .back:hover{color:var(--text)}
+  .back:active{color:var(--turq)}
   .detail-eyebrow{font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
   .detail-title{
     font-family:'Playfair Display',serif;font-weight:900;
@@ -116,17 +118,6 @@
   }
   .no-tool-note{color:var(--muted);font-size:13.5px;font-style:italic}
 
-  .video-frame{
-    position:relative;border-radius:14px;overflow:hidden;background:#0a0a0a;
-    border:1px solid var(--border);margin-bottom:24px;
-  }
-  .video-frame iframe{display:none;width:100%;aspect-ratio:16/9;border:0}
-  .video-frame.has-src iframe{display:block}
-  .video-placeholder{
-    aspect-ratio:16/9;display:grid;place-items:center;text-align:center;padding:24px;
-    color:var(--muted);font-size:13px;
-  }
-
   .phrase-line{
     font-family:'Playfair Display',serif;font-style:italic;font-weight:600;
     font-size:1.35rem;color:var(--turq);margin-bottom:24px;line-height:1.4;
@@ -144,6 +135,8 @@
     position:relative;overflow:hidden;
   }
   .complete-btn.is-done{background:var(--turq);color:#0c0c0c}
+  .complete-btn:active{background:rgba(0,229,209,.25);color:var(--turq)}
+  .complete-btn.is-done:active{background:#00c2b0}
   .pulse-ring{position:absolute;inset:-2px;border-radius:12px;border:2px solid var(--turq);opacity:0;pointer-events:none}
   .pulse-ring.go{animation:pulseRing .9s ease-out}
   @keyframes pulseRing{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.06)}}
@@ -182,14 +175,10 @@
   const CHALLENGE_START_DATE = '2026-09-01';
 
   /* Fill in real tool links as they're finalized. Blank = no tool, card-only day. */
-  /* Fill in real video embed links as they're recorded. Blank = placeholder shown. */
-  const VIDEO_LINKS = {
-    1:'', 2:'', 3:'', 4:'', 5:'', 6:'', 7:'', 8:'', 9:'', 10:''
-  };
 
   const TOOL_LINKS = {
     1:  { name: 'Coping Skills Library', url: 'https://fearlessworkplace-stack.github.io/coping/' },
-    2:  { name: 'Threat Response Mirror', url: '' },
+    2:  { name: 'Threat Response Mirror', url: 'https://fearlessworkplace-stack.github.io/threatresponse/' },
     11: { name: 'Rate & Regulate', url: '' },
     14: { name: 'Breaking the Loop Starter Guide', url: '' },
     18: { name: 'Conflict Styles Assessment', url: '' },
@@ -253,26 +242,86 @@
       phrase:'They do not need an all-access pass.',
       why:'Less unnecessary exposure means fewer opportunities for disruption. You can\u2019t always control who someone is, but you often can control how much of your time, information, and availability they have access to.',
       how:'Change the channel you communicate through, limit what you disclose, reduce unnecessary one-on-one contact, manage your availability, or choose group settings over private ones where it helps.' },
-    { n:11, title:'Stay Uncomfortable Without Making The Situation Worse', body:'Feeling bad is not an emergency. Short-term relief through arguing, appeasing, or retaliating can create longer-term consequences.' },
-    { n:12, title:'Accept The Situation You Actually Have', body:'Strategy has to be built around demonstrated reality, not the person or workplace you wish existed.' },
-    { n:13, title:'Choose What Deserves Your Response', body:'Not everything deserves an answer. Constant responding drains capacity and political capital that could be spent more deliberately.' },
-    { n:14, title:'Interrupt Your Reaction Pattern Earlier', body:'The same kind of interaction keeps producing the same reaction. Finding the earliest point you can intervene makes change easier than trying to recover once fully activated.' },
-    { n:15, title:'Set A Boundary You Can Actually Enforce', body:'A boundary is about what you do next, not what you ask someone else to do. Limits built around your own actions are the ones that hold.' },
-    { n:16, title:'Hold The Boundary Without Reopening The Negotiation', body:'You already answered. Repeated explanation teaches persistent people that pressure works.' },
-    { n:17, title:'End Conversations That Are No Longer Useful', body:'You are allowed to be done talking. Staying too long can increase conflict without improving the outcome.' },
-    { n:18, title:'Choose The Conflict Approach That Fits The Situation', body:'Different situations call for different levels of engagement. Knowing your default style, and when to flex out of it, makes you deliberate instead of automatic.' },
-    { n:19, title:'Address The Behavior Without Making It Personal', body:'Observable behavior is easier to address and harder to dismiss than a conversation about someone\u2019s character or motives.' },
-    { n:20, title:'Keep Your Communication Clean Under Pressure', body:'Reactive communication becomes part of the record. Brief, factual, and firm protects your credibility when tension is high.' },
-    { n:21, title:'Document Strategically', body:'Good documentation preserves facts, patterns, and decisions without becoming an emotional diary. Knowing what warrants a record, and creating one that holds up, is a skill on its own.' },
-    { n:22, title:'Build Your Wins File', body:'Your professional value should not depend on one person\u2019s memory. A running record of accomplishments protects your own narrative.' },
-    { n:23, title:'Build Your Allies', body:'Relationships provide information, credibility, advocacy, and options that a single manager or team cannot.' },
-    { n:24, title:'Learn Who Holds Real Influence', body:'The org chart is not the whole story. Formal authority and real influence are not always the same thing.' },
-    { n:25, title:'Build Career Leverage While You Are Still There', body:'Workshops, training, and visible projects build leverage even if you have no intention of leaving today. This one is about what you take advantage of while you stay.' },
-    { n:26, title:'Contain Rumination When Useful Thinking Is Finished', body:'Replaying an interaction after there is nothing new to solve drains capacity while pretending to be problem-solving. Knowing when to stop feeding it is its own skill.' },
-    { n:27, title:'Rebuild The Parts Of Your Life Work Has Crowded Out', body:'The more of your identity work occupies, the more power workplace events have over you. Reinvesting elsewhere changes that balance.' },
-    { n:28, title:'Raise A Concern So Somebody Can Actually Act On It', body:'Decision-makers need a usable problem, not a 45-minute story. A concern that names the pattern, the impact, and the ask is easier to move on.' },
-    { n:29, title:'Escalate With A Strategy', body:'Escalation can help, do nothing, or create risk depending on how it\u2019s handled. Choosing the right route, timing, and framing improves the odds it works in your favor.' },
-    { n:30, title:'Choose Your Strategy', body:'This is the capstone. Pull together what you\u2019ve learned across the last 29 days into one deliberate plan for what you\u2019ll address, tolerate, document, escalate, or keep open as an option.' }
+    { n:11, title:'Stay Uncomfortable Without Making The Situation Worse',
+      phrase:'Feeling bad is not an emergency.',
+      why:'Short-term relief through arguing, appeasing, or retaliating can create longer-term consequences. The urge to make discomfort stop immediately is usually what leads to a worse decision than the discomfort itself.',
+      how:'Notice the urge for instant relief and let it pass instead of acting on it. Use grounding, a brief distraction, or simply naming the urge out loud. Most distress peaks and starts to drop within twenty or thirty minutes if you let it.' },
+    { n:12, title:'Accept The Situation You Have',
+      phrase:'Stop waiting for Shirley to become Susan.',
+      why:'Strategy has to be built around demonstrated reality, not the person or workplace you wish existed. Planning around hoped-for change instead of the pattern already shown is how good plans keep failing for the same reason.',
+      how:'Write down what has been demonstrated, repeatedly, by this person or this workplace. Separate what you can influence from what you cannot. Build your plan around the second list, not the first.' },
+    { n:13, title:'Choose What Deserves Your Response',
+      phrase:'Not everything deserves an answer.',
+      why:'Constant responding drains capacity and spends political capital that could be used somewhere that moves things forward.',
+      how:'Before responding, ask whether the situation genuinely requires action, whether facts need correcting on the record, whether it affects your work, and whether responding serves your goal. If the answer is no across the board, let it go.' },
+    { n:14, title:'Interrupt Your Reaction Pattern Earlier',
+      phrase:'Catch it earlier next time.',
+      why:'The same kind of interaction keeps producing the same reaction. Intervening earlier in that chain is far easier than trying to recover once you are already fully activated.',
+      how:'Trace the sequence after it happens: what triggered it, how you interpreted it, what happened in your body, what emotion followed, what urge came next, what you did. Find the earliest point in that chain where a different move becomes possible.' },
+    { n:15, title:'Set A Boundary You Can Enforce',
+      phrase:'A boundary is about what YOU do next.',
+      why:'A boundary you cannot enforce is mostly a request. Limits built around someone else changing are weaker than limits built around your own actions.',
+      how:'Define the specific behavior, the limit itself, and what you will do if it is crossed. Boundaries can be about your capacity, your access, or your communication. Know which kind you are setting.' },
+    { n:16, title:'Hold The Boundary Without Reopening The Negotiation',
+      phrase:'You already answered.',
+      why:'Repeated explanation teaches persistent people that pushing back reopens the issue. Every re-justification is a small invitation to keep pushing.',
+      how:'Repeat the limit in close to the same words each time, without adding new justification. Stay low-reactivity. Follow through on what you said you would do if it is crossed again.' },
+    { n:17, title:'End Conversations That Are No Longer Useful',
+      phrase:'You are allowed to be done talking.',
+      why:'Staying in a conversation past its useful point can increase conflict without improving anything. There is a moment where continuing to explain stops helping and starts costing you.',
+      how:'Use a closing statement, redirect back to the actual work, defer the discussion to another time, or simply leave. You do not owe a conversation more of your time just because the other person wants to keep going.' },
+    { n:18, title:'Choose The Conflict Approach That Fits The Situation',
+      phrase:'Stop using the same hammer on every problem.',
+      why:'Different situations call for different levels of engagement. Defaulting to the same conflict style regardless of stakes or power dynamics means you are often using the wrong tool.',
+      how:'Know your default conflict style first. Then deliberately choose the approach, competing, collaborating, compromising, avoiding, or accommodating, that fits this specific situation instead of falling back on habit.' },
+    { n:19, title:'Address The Behavior Without Making It Personal',
+      phrase:'Talk about what they did, not who you think they are.',
+      why:'Observable behavior is easier to address and harder to dismiss than a conversation about someone\u2019s character or motives. Character accusations invite defensiveness. Behavior descriptions invite a response.',
+      how:'Describe the specific behavior, its impact on the work, and what you need to change. State it plainly, without diagnosing why they did it.' },
+    { n:20, title:'Keep Your Communication Clean Under Pressure',
+      phrase:'Do not put your meltdown in writing.',
+      why:'Reactive communication becomes part of the record. Whatever you write when activated is the version that gets forwarded, saved, and read back to you later.',
+      how:'Keep written responses brief, factual, and firm. Cut accusations and motive language before you hit send. If you are still activated, delay the response until you are not.' },
+    { n:21, title:'Document Strategically',
+      phrase:'Write the record, not the memoir.',
+      why:'Good documentation preserves facts, patterns, and decisions without becoming an emotional diary. Knowing what warrants a record, and building one that holds up, is a skill on its own.',
+      how:'Record incidents with dates, exact language when relevant, witnesses, and work impact. Confirm important conversations in writing afterward, and keep an eye on the pattern building across entries, not just each single event.' },
+    { n:22, title:'Build Your Wins File',
+      phrase:'Keep your own receipts.',
+      why:'Your professional value should not depend on one person\u2019s memory or mood. A running record protects your own narrative from being overwritten by someone else\u2019s.',
+      how:'Capture achievements, positive feedback, outcomes, successful projects, and relevant metrics as they happen. Do not wait for a review cycle to try to remember them.' },
+    { n:23, title:'Build Your Allies',
+      phrase:'Get people in your corner before you need them.',
+      why:'Relationships provide information, credibility, advocacy, and options that a single manager or team cannot. Waiting until you are in crisis to build them is too late.',
+      how:'Identify trustworthy relationships across teams, not just inside your immediate chain of command. Contribute real value to those relationships so they are reciprocal, not one-sided.' },
+    { n:24, title:'Learn Who Holds Real Influence',
+      phrase:'The org chart is not the whole story.',
+      why:'Formal authority and real influence are not always the same thing. Assuming they match can mean you are asking the wrong person for help or protection.',
+      how:'Notice who controls information, who gatekeepers listen to, who sponsors decisions, and where alliances run. That map rarely matches the boxes on the chart exactly.' },
+    { n:25, title:'Build Career Leverage While You Are Still There',
+      phrase:'You feel less trapped when you have options.',
+      why:'Leverage gives you more choices, both inside and outside the organization, even if you have no plan to leave today. This is about what you take advantage of while you stay.',
+      how:'Take advantage of workshops, training, and visible projects. Keep your resume, portfolio, and professional relationships current, not as an exit plan, just as ongoing maintenance.' },
+    { n:26, title:'Contain Rumination When Useful Thinking Is Finished',
+      phrase:'Stop holding the meeting again in your head.',
+      why:'Rehearsing an interaction with no new information drains attention while pretending to be problem-solving. Knowing when thinking has stopped being useful is its own skill.',
+      how:'Give it three focused minutes. Capture anything genuinely actionable. Then use a mental "not now" and redirect your attention somewhere else on purpose.' },
+    { n:27, title:'Rebuild The Parts Of Your Life Work Has Crowded Out',
+      phrase:'Your job cannot be your entire identity.',
+      why:'The more of your identity work occupies, the more power workplace events have over how you feel about yourself and your life. A broader life reduces that power.',
+      how:'Reinvest deliberately in relationships, hobbies, learning, movement, or community, whatever has quietly shrunk while work expanded. This is not indulgence, it is rebalancing.' },
+    { n:28, title:'Raise A Concern So Somebody Can Act On It',
+      phrase:'Do not hand them a forty-five minute story and hope they figure out what you want.',
+      why:'Decision-makers need a usable problem, not a sprawling narrative. A concern that names the pattern, the impact, and the ask is far easier for someone else to move on.',
+      how:'Present the behavior or pattern, your strongest examples, the impact on the work, what you have already tried, and the specific outcome you are asking for.' },
+    { n:29, title:'Escalate With A Strategy',
+      phrase:'Do not just go to HR. Know what you need from them.',
+      why:'Escalation can create risk as well as opportunity, and how it is handled changes the odds significantly. Escalating without a plan often produces a worse outcome than not escalating at all.',
+      how:'Choose the right route, timing, and framing. Bring your evidence. Know the outcome you are asking for and understand the confidentiality limits of whoever you are escalating to.' },
+    { n:30, title:'Choose Your Strategy',
+      phrase:'Stop reacting case by case. Decide how you are going to play this.',
+      why:'This is the capstone. The purpose of the whole thirty days is increasing your agency and your ability to choose deliberately instead of reacting moment to moment.',
+      how:'Assess the situation as it stands. Decide what needs protecting, what you will address, tolerate, document, escalate, or keep open as an option. Choose proportionate action, then monitor results and reassess as things change.' }
   ];
 
   function unlockDate(n){
@@ -357,13 +406,6 @@
     const done = getDone();
     const isDone = !!done[n];
     const tool = TOOL_LINKS[n];
-    const videoUrl = VIDEO_LINKS[n];
-
-    const videoHtml =
-      '<div class="video-frame' + (videoUrl ? ' has-src' : '') + '">' +
-        '<iframe src="' + (videoUrl || '') + '" title="' + s.title + '" loading="lazy" allowfullscreen></iframe>' +
-        (!videoUrl ? '<div class="video-placeholder">Video coming soon.</div>' : '') +
-      '</div>';
 
     let bodyHtml;
     if (s.why || s.how) {
@@ -390,7 +432,6 @@
     detailContent.innerHTML =
       '<div class="detail-eyebrow">Strategy ' + n + ' &middot; ' + phaseFor(n) + '</div>' +
       '<h1 class="detail-title">' + s.title + '</h1>' +
-      videoHtml +
       bodyHtml +
       toolHtml +
       '<div class="complete-row">' +
