@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>30-Day Strategy Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#121212;
+    --panel:#1a1a1a;
+    --panel-hi:#1f1f1f;
+    --border:#292929;
+    --turq:#00E5D1;
+    --turq-dim:#0a4941;
+    --text:#FAFAF8;
+    --muted:#8f8a82;
+    --copper:#C76A2E;
+    --burgundy:#8B2635;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Space Grotesk',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;cursor:pointer}
+  [hidden]{display:none!important}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px}
+
+  .head{
+    padding:36px 0 26px;
+    border-bottom:1px solid var(--border);
+  }
+  .head-eyebrow{font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+  .head-title{
+    font-family:'Playfair Display',serif;
+    font-weight:900;
+    font-size:clamp(1.9rem,4.5vw,2.7rem);
+    line-height:1.05;
+    letter-spacing:-.5px;
+  }
+  .shimmer{
+    background:linear-gradient(90deg,var(--turq-dim) 0%,#147a6c 16%,var(--turq) 32%,#FFFFFF 50%,var(--turq) 68%,var(--turq-dim) 100%);
+    background-size:220% auto;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:shimmer 6s linear infinite;
+  }
+  @keyframes shimmer{to{background-position:200% center}}
+  .head-sub{color:var(--muted);font-size:14.5px;line-height:1.65;margin-top:14px;max-width:60ch}
+
+  .progress-row{display:flex;align-items:center;gap:14px;margin-top:22px}
+  .progress-track{flex:1;height:6px;background:#262626;border-radius:99px;overflow:hidden}
+  .progress-fill{height:100%;width:0%;background:var(--turq);transition:width .5s ease}
+  .progress-count{font-size:12.5px;color:var(--muted);white-space:nowrap;min-width:64px;text-align:right}
+
+  .grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+    padding:30px 0 60px;
+  }
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px 19px;
+    transition:transform .2s ease,border-color .2s ease;
+    cursor:pointer;
+    position:relative;
+  }
+  .card:not(.locked):hover{transform:translateY(-3px);border-color:var(--turq)}
+  .card.locked{opacity:.42;cursor:default}
+  .card.done{border-color:rgba(0,229,209,.5)}
+
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:9px}
+  .card-num{font-size:11px;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+  .card-state{font-size:10.5px;font-weight:600}
+  .card-state.locked-tag{color:var(--muted)}
+  .card-state.done-tag{color:var(--turq)}
+  .card-title{
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    font-size:1.15rem;
+    line-height:1.22;
+    margin-bottom:8px;
+  }
+  .card-meta{font-size:12px;color:var(--muted)}
+  .card-unlock-date{font-size:11.5px;color:var(--muted);margin-top:8px}
+
+  /* detail screen */
+  .detail{padding:40px 0 70px}
+  .back{
+    background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;
+    display:inline-flex;align-items:center;gap:6px;margin-bottom:26px;cursor:pointer;
+  }
+  .back:hover{color:var(--text)}
+  .detail-eyebrow{font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
+  .detail-title{
+    font-family:'Playfair Display',serif;font-weight:900;
+    font-size:clamp(2rem,5vw,3rem);line-height:1.04;letter-spacing:-.5px;margin-bottom:18px;
+  }
+  .detail-body{font-size:15px;line-height:1.75;color:#d8d5cf;max-width:62ch;margin-bottom:26px}
+  .tool-box{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:20px 22px;margin-bottom:20px;
+  }
+  .tool-box-label{font-size:11px;letter-spacing:1.5px;color:var(--turq);text-transform:uppercase;margin-bottom:10px}
+  .tool-box-name{font-family:'Playfair Display',serif;font-weight:700;font-size:1.3rem;margin-bottom:14px}
+  .tool-link{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--turq);color:#0c0c0c;font-weight:700;font-size:13px;
+    padding:12px 20px;border-radius:10px;
+  }
+  .no-tool-note{color:var(--muted);font-size:13.5px;font-style:italic}
+
+  .video-frame{
+    position:relative;border-radius:14px;overflow:hidden;background:#0a0a0a;
+    border:1px solid var(--border);margin-bottom:24px;
+  }
+  .video-frame iframe{display:none;width:100%;aspect-ratio:16/9;border:0}
+  .video-frame.has-src iframe{display:block}
+  .video-placeholder{
+    aspect-ratio:16/9;display:grid;place-items:center;text-align:center;padding:24px;
+    color:var(--muted);font-size:13px;
+  }
+
+  .phrase-line{
+    font-family:'Playfair Display',serif;font-style:italic;font-weight:600;
+    font-size:1.35rem;color:var(--turq);margin-bottom:24px;line-height:1.4;
+  }
+
+  .section-label{font-size:11px;letter-spacing:1.5px;color:var(--copper);text-transform:uppercase;margin-bottom:10px}
+  .section-block{margin-bottom:26px}
+  .section-text{font-size:15px;line-height:1.75;color:#d8d5cf;max-width:62ch}
+
+  .complete-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .complete-btn{
+    background:transparent;border:1.5px solid var(--turq);color:var(--turq);
+    padding:12px 20px;border-radius:10px;font-weight:700;font-size:13px;
+    transition:background .2s ease,color .2s ease;
+    position:relative;overflow:hidden;
+  }
+  .complete-btn.is-done{background:var(--turq);color:#0c0c0c}
+  .pulse-ring{position:absolute;inset:-2px;border-radius:12px;border:2px solid var(--turq);opacity:0;pointer-events:none}
+  .pulse-ring.go{animation:pulseRing .9s ease-out}
+  @keyframes pulseRing{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.06)}}
+
+  .locked-screen{padding:60px 0;text-align:center;color:var(--muted)}
+  .locked-screen .lock-title{font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--text);margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="head" id="homeHead">
+    <div class="head-eyebrow">Fearless Workplace</div>
+    <div class="head-title">Toxic Workplace <span class="shimmer">Strategy Challenge</span></div>
+    <p class="head-sub">A 30 day challenge. One strategy unlocks each day of September, and stays open once it's live so you can work through it at your own pace.</p>
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-count" id="progressCount">0 / 30</div>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="detail" id="detailScreen" hidden>
+    <button class="back" id="backBtn">&larr; Back to all strategies</button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ═══════════ CONFIG ═══════════
+     Change this one line to relaunch for a future cohort. */
+  const CHALLENGE_START_DATE = '2026-09-01';
+
+  /* Fill in real tool links as they're finalized. Blank = no tool, card-only day. */
+  /* Fill in real video embed links as they're recorded. Blank = placeholder shown. */
+  const VIDEO_LINKS = {
+    1:'', 2:'', 3:'', 4:'', 5:'', 6:'', 7:'', 8:'', 9:'', 10:''
+  };
+
+  const TOOL_LINKS = {
+    1:  { name: 'Coping Skills Library', url: 'https://fearlessworkplace-stack.github.io/coping/' },
+    2:  { name: 'Threat Response Mirror', url: '' },
+    11: { name: 'Rate & Regulate', url: '' },
+    14: { name: 'Breaking the Loop Starter Guide', url: '' },
+    18: { name: 'Conflict Styles Assessment', url: '' },
+    19: { name: 'Pushing Back Professionally', url: '' },
+    21: { name: 'Documentation Toolkit + Build the Case', url: '' },
+    26: { name: 'Breaking the Loop Starter Guide', url: '' },
+    28: { name: '25 Quick Scripts', url: '' },
+    29: { name: 'Build the Case dashboard', url: '' }
+  };
+
+  const PHASES = [
+    { range: [1,10],  label: 'Regulation & Perspective' },
+    { range: [11,17], label: 'Environmental Navigation' },
+    { range: [18,20], label: 'Communication & Conflict' },
+    { range: [21,25], label: 'Career Protection' },
+    { range: [26,30], label: 'Recovery & Strategy' }
+  ];
+  function phaseFor(n){
+    const p = PHASES.find(p => n >= p.range[0] && n <= p.range[1]);
+    return p ? p.label : '';
+  }
+
+  const STRATEGIES = [
+    { n:1, title:'Regulate Your Body Before You Respond',
+      phrase:'Get your nervous system out of the driver\u2019s seat.',
+      why:'High activation makes it harder to think strategically. The first bad decision often happens while activation is still high, before you\u2019ve had a chance to choose anything on purpose.',
+      how:'Test a few options and notice which one brings your body down fastest: cold water on your face or wrists, paced breathing, movement, eye movement, progressive muscle release, or a body scan. You don\u2019t need all of them. You need the one or two that reliably work for you.' },
+    { n:2, title:'Recognize Your Threat Response Before It Chooses For You',
+      phrase:'Know your default when your brain thinks you\u2019re under attack.',
+      why:'An automatic threat response can masquerade as a deliberate decision. Fight, flight, freeze, or fawn all feel like choices in the moment, even when they\u2019re really just the pattern running on autopilot.',
+      how:'Notice your triggers, the body cues that show up first, your typical behavior once activated, and the action urge underneath it. Naming the pattern while it\u2019s happening is what gives you room to decide whether to follow it or not.' },
+    { n:3, title:'Buy Yourself Time Before You Answer',
+      phrase:'You do not owe anybody an instant reaction.',
+      why:'Delay gives you room to think instead of operating straight from threat response. Someone wanting an answer right now does not obligate you to give one right now.',
+      how:'Use silence, a timeout, stepping away, drafting a response and holding it before sending, scheduling the conversation for later, or a plain "I need to think about that."' },
+    { n:4, title:'Separate What Happened From What Your Brain Added',
+      phrase:'Facts first. Story second.',
+      why:'Bad strategy starts with bad information. Once facts, assumptions, motives, and predictions blend together, it gets hard to choose a response to what occurred instead of what you\u2019ve concluded it means.',
+      how:'Write down the observable facts, what was said, what was done, what changed, on one side. Write your interpretation, the story, the meaning you\u2019ve attached to it, on the other. Keep them separate.' },
+    { n:5, title:'Assume Neutral Intent Until The Pattern Proves Otherwise',
+      phrase:'Grumpy is not the same as hostile.',
+      why:'Misreading demeanor as targeting creates unnecessary stress and can damage a relationship that was never hostile to begin with. Someone being blunt, cold, or awkward is not the same as someone being against you.',
+      how:'Look at how they treat other people, not just you. Consider personality, culture, or communication style as alternative explanations. Watch for actual evidence of targeting before deciding that\u2019s what this is.' },
+    { n:6, title:'Recognize The Tactic Being Used',
+      phrase:'Name the move before you react to it.',
+      why:'False accusations, exclusion, moving standards, and gossip feel like unrelated, random incidents until you can name the category they belong to. Recognizing the tactic helps you choose a response that fits it.',
+      how:'Learn a few starter categories: reputation attacks, moving the rules, exclusion, information control, intimidation, coalition building, blame shifting, and reality distortion. The Defense Matrix goes deeper on each one if you want the full behavior list.' },
+    { n:7, title:'Detach Emotionally From Their Behavior',
+      phrase:'Stop making their damage your problem.',
+      why:'Personalizing someone else\u2019s dysfunction increases rumination and emotional dependence on their opinion of you. Their behavior can be unpleasant without it becoming a verdict on who you are.',
+      how:'Study their broader pattern instead of just your interaction with them. How do they treat other people? What sets them off? Perspective-taking here is not about excusing the behavior, it\u2019s about taking it less personally.' },
+    { n:8, title:'Build Your Support System',
+      phrase:'Do not let work become your only reality check.',
+      why:'Isolation makes workplace problems feel larger and harder to evaluate accurately. Carrying the whole thing alone leaves you without any outside perspective to check your read against.',
+      how:'Identify a few different kinds of support: someone who listens without trying to fix it, someone who gives you a reality check, someone who helps you problem solve. Ask for the kind you need in the moment, rather than defaulting to venting on repeat.' },
+    { n:9, title:'Stay Out Of Triangulation',
+      phrase:'Do not become somebody else\u2019s messenger, jury, or ammunition.',
+      why:'Getting pulled into gossip, side-taking, or message-carrying creates exposure and can make you part of a conflict that was never yours to begin with.',
+      how:'Redirect people back to each other instead of carrying messages between them. Don\u2019t validate claims about someone you didn\u2019t personally witness. It\u2019s fine to decline a "just between us" conversation.' },
+    { n:10, title:'Control How Much Access A Difficult Person Gets To You',
+      phrase:'They do not need an all-access pass.',
+      why:'Less unnecessary exposure means fewer opportunities for disruption. You can\u2019t always control who someone is, but you often can control how much of your time, information, and availability they have access to.',
+      how:'Change the channel you communicate through, limit what you disclose, reduce unnecessary one-on-one contact, manage your availability, or choose group settings over private ones where it helps.' },
+    { n:11, title:'Stay Uncomfortable Without Making The Situation Worse', body:'Feeling bad is not an emergency. Short-term relief through arguing, appeasing, or retaliating can create longer-term consequences.' },
+    { n:12, title:'Accept The Situation You Actually Have', body:'Strategy has to be built around demonstrated reality, not the person or workplace you wish existed.' },
+    { n:13, title:'Choose What Deserves Your Response', body:'Not everything deserves an answer. Constant responding drains capacity and political capital that could be spent more deliberately.' },
+    { n:14, title:'Interrupt Your Reaction Pattern Earlier', body:'The same kind of interaction keeps producing the same reaction. Finding the earliest point you can intervene makes change easier than trying to recover once fully activated.' },
+    { n:15, title:'Set A Boundary You Can Actually Enforce', body:'A boundary is about what you do next, not what you ask someone else to do. Limits built around your own actions are the ones that hold.' },
+    { n:16, title:'Hold The Boundary Without Reopening The Negotiation', body:'You already answered. Repeated explanation teaches persistent people that pressure works.' },
+    { n:17, title:'End Conversations That Are No Longer Useful', body:'You are allowed to be done talking. Staying too long can increase conflict without improving the outcome.' },
+    { n:18, title:'Choose The Conflict Approach That Fits The Situation', body:'Different situations call for different levels of engagement. Knowing your default style, and when to flex out of it, makes you deliberate instead of automatic.' },
+    { n:19, title:'Address The Behavior Without Making It Personal', body:'Observable behavior is easier to address and harder to dismiss than a conversation about someone\u2019s character or motives.' },
+    { n:20, title:'Keep Your Communication Clean Under Pressure', body:'Reactive communication becomes part of the record. Brief, factual, and firm protects your credibility when tension is high.' },
+    { n:21, title:'Document Strategically', body:'Good documentation preserves facts, patterns, and decisions without becoming an emotional diary. Knowing what warrants a record, and creating one that holds up, is a skill on its own.' },
+    { n:22, title:'Build Your Wins File', body:'Your professional value should not depend on one person\u2019s memory. A running record of accomplishments protects your own narrative.' },
+    { n:23, title:'Build Your Allies', body:'Relationships provide information, credibility, advocacy, and options that a single manager or team cannot.' },
+    { n:24, title:'Learn Who Holds Real Influence', body:'The org chart is not the whole story. Formal authority and real influence are not always the same thing.' },
+    { n:25, title:'Build Career Leverage While You Are Still There', body:'Workshops, training, and visible projects build leverage even if you have no intention of leaving today. This one is about what you take advantage of while you stay.' },
+    { n:26, title:'Contain Rumination When Useful Thinking Is Finished', body:'Replaying an interaction after there is nothing new to solve drains capacity while pretending to be problem-solving. Knowing when to stop feeding it is its own skill.' },
+    { n:27, title:'Rebuild The Parts Of Your Life Work Has Crowded Out', body:'The more of your identity work occupies, the more power workplace events have over you. Reinvesting elsewhere changes that balance.' },
+    { n:28, title:'Raise A Concern So Somebody Can Actually Act On It', body:'Decision-makers need a usable problem, not a 45-minute story. A concern that names the pattern, the impact, and the ask is easier to move on.' },
+    { n:29, title:'Escalate With A Strategy', body:'Escalation can help, do nothing, or create risk depending on how it\u2019s handled. Choosing the right route, timing, and framing improves the odds it works in your favor.' },
+    { n:30, title:'Choose Your Strategy', body:'This is the capstone. Pull together what you\u2019ve learned across the last 29 days into one deliberate plan for what you\u2019ll address, tolerate, document, escalate, or keep open as an option.' }
+  ];
+
+  function unlockDate(n){
+    const start = new Date(CHALLENGE_START_DATE + 'T00:00:00');
+    const d = new Date(start);
+    d.setDate(d.getDate() + (n - 1));
+    return d;
+  }
+  function isUnlocked(n){
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    return unlockDate(n) <= today;
+  }
+  function formatDate(d){
+    return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  }
+
+  function getDone(){
+    try { return JSON.parse(localStorage.getItem('fw_challenge_done')||'{}'); }
+    catch(e){ return {}; }
+  }
+  function setDone(obj){
+    try { localStorage.setItem('fw_challenge_done', JSON.stringify(obj)); } catch(e){}
+  }
+
+  const grid = document.getElementById('grid');
+  const detailScreen = document.getElementById('detailScreen');
+  const detailContent = document.getElementById('detailContent');
+  const homeHead = document.getElementById('homeHead');
+  const backBtn = document.getElementById('backBtn');
+
+  function renderProgress(){
+    const done = getDone();
+    const count = Object.values(done).filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (count/30*100) + '%';
+    document.getElementById('progressCount').textContent = count + ' / 30';
+  }
+
+  function renderGrid(){
+    grid.innerHTML = '';
+    const done = getDone();
+    STRATEGIES.forEach(s => {
+      const unlocked = isUnlocked(s.n);
+      const isDone = !!done[s.n];
+      const card = document.createElement('div');
+      card.className = 'card' + (!unlocked ? ' locked' : '') + (isDone ? ' done' : '');
+      if (unlocked) {
+        card.innerHTML =
+          '<div class="card-top">' +
+            '<div class="card-num">Strategy ' + s.n + '</div>' +
+            (isDone ? '<div class="card-state done-tag">&#10003; Done</div>' : '') +
+          '</div>' +
+          '<div class="card-title">' + s.title + '</div>' +
+          '<div class="card-meta">' + phaseFor(s.n) + '</div>';
+      } else {
+        card.innerHTML =
+          '<div class="card-top">' +
+            '<div class="card-num">Strategy ' + s.n + '</div>' +
+            '<div class="card-state locked-tag">Locked</div>' +
+          '</div>' +
+          '<div class="card-unlock-date">Unlocks ' + formatDate(unlockDate(s.n)) + '</div>';
+      }
+      if (unlocked) card.addEventListener('click', () => openDetail(s.n));
+      grid.appendChild(card);
+    });
+  }
+
+  function openDetail(n){
+    const s = STRATEGIES.find(s => s.n === n);
+    const unlocked = isUnlocked(n);
+    homeHead.hidden = true;
+    grid.hidden = true;
+    detailScreen.hidden = false;
+
+    if (!unlocked) {
+      detailContent.innerHTML =
+        '<div class="locked-screen"><div class="lock-title">Not unlocked yet</div>' +
+        '<p>Strategy ' + n + ' unlocks ' + formatDate(unlockDate(n)) + '.</p></div>';
+      return;
+    }
+
+    const done = getDone();
+    const isDone = !!done[n];
+    const tool = TOOL_LINKS[n];
+    const videoUrl = VIDEO_LINKS[n];
+
+    const videoHtml =
+      '<div class="video-frame' + (videoUrl ? ' has-src' : '') + '">' +
+        '<iframe src="' + (videoUrl || '') + '" title="' + s.title + '" loading="lazy" allowfullscreen></iframe>' +
+        (!videoUrl ? '<div class="video-placeholder">Video coming soon.</div>' : '') +
+      '</div>';
+
+    let bodyHtml;
+    if (s.why || s.how) {
+      bodyHtml =
+        (s.phrase ? '<p class="phrase-line">' + s.phrase + '</p>' : '') +
+        (s.why ? '<div class="section-block"><div class="section-label">Why This Helps</div><p class="section-text">' + s.why + '</p></div>' : '') +
+        (s.how ? '<div class="section-block"><div class="section-label">How To Do It</div><p class="section-text">' + s.how + '</p></div>' : '');
+    } else {
+      bodyHtml = '<p class="detail-body">' + s.body + '</p>';
+    }
+
+    let toolHtml = '';
+    if (tool) {
+      toolHtml =
+        '<div class="tool-box">' +
+          '<div class="tool-box-label">Today\u2019s Tool</div>' +
+          '<div class="tool-box-name">' + tool.name + '</div>' +
+          (tool.url
+            ? '<a class="tool-link" href="' + tool.url + '" target="_blank" rel="noreferrer">Open the tool &rarr;</a>'
+            : '<span class="no-tool-note">Link coming soon.</span>') +
+        '</div>';
+    }
+
+    detailContent.innerHTML =
+      '<div class="detail-eyebrow">Strategy ' + n + ' &middot; ' + phaseFor(n) + '</div>' +
+      '<h1 class="detail-title">' + s.title + '</h1>' +
+      videoHtml +
+      bodyHtml +
+      toolHtml +
+      '<div class="complete-row">' +
+        '<button class="complete-btn' + (isDone ? ' is-done' : '') + '" id="completeBtn">' +
+          '<span class="pulse-ring" id="pulseRing"></span>' +
+          (isDone ? '&#10003; Marked Complete' : 'Mark Strategy Complete') +
+        '</button>' +
+      '</div>';
+
+    document.getElementById('completeBtn').addEventListener('click', function(){
+      const d = getDone();
+      d[n] = !d[n];
+      setDone(d);
+      const ring = document.getElementById('pulseRing');
+      ring.classList.remove('go');
+      void ring.offsetWidth;
+      if (d[n]) ring.classList.add('go');
+      openDetail(n);
+      renderProgress();
+    });
+  }
+
+  backBtn.addEventListener('click', function(){
+    detailScreen.hidden = true;
+    homeHead.hidden = false;
+    grid.hidden = false;
+    renderGrid();
+    renderProgress();
+  });
+
+  renderGrid();
+  renderProgress();
+})();
+</script>
+</body>
+</html>
