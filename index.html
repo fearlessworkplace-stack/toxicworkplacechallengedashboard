@@ -179,6 +179,7 @@
   const TOOL_LINKS = {
     1:  { name: 'Coping Skills Library', url: 'https://fearlessworkplace-stack.github.io/coping/' },
     2:  { name: 'Threat Response Mirror', url: 'https://fearlessworkplace-stack.github.io/threatresponse/' },
+    5:  { name: 'Fearless Workplace App', url: 'https://fearless-workp.replit.app/', label: 'Go Deeper', cta: 'Open the App' },
     11: { name: 'Rate & Regulate', url: '' },
     14: { name: 'Breaking the Loop Starter Guide', url: '' },
     18: { name: 'Conflict Styles Assessment', url: '' },
@@ -419,12 +420,14 @@
 
     let toolHtml = '';
     if (tool) {
+      const boxLabel = tool.label || 'Today\u2019s Tool';
+      const ctaText = tool.cta || 'Open the tool';
       toolHtml =
         '<div class="tool-box">' +
-          '<div class="tool-box-label">Today\u2019s Tool</div>' +
+          '<div class="tool-box-label">' + boxLabel + '</div>' +
           '<div class="tool-box-name">' + tool.name + '</div>' +
           (tool.url
-            ? '<a class="tool-link" href="' + tool.url + '" target="_blank" rel="noreferrer">Open the tool &rarr;</a>'
+            ? '<a class="tool-link" href="' + tool.url + '" target="_blank" rel="noreferrer">' + ctaText + ' &rarr;</a>'
             : '<span class="no-tool-note">Link coming soon.</span>') +
         '</div>';
     }
